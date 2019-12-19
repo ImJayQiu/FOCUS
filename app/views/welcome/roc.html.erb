@@ -1,0 +1,179 @@
+<section class="section gb nopadtop">
+
+    <div class="container">
+
+	<div class="boxed boxedp4">
+
+	    <div>
+
+		<img src=<%="#{root_url}/upload/countries/#{$country_iso}.jpg"%> alt="Country Map" height=100% width=100% />
+	    </div>
+
+	    <div class="row">
+
+		<div class="col-md-6 col-md-offset-3">
+
+		    <div class="section-title text-center">
+
+			<h3><%= current_user.country%> Forecast</h3>
+
+			<p>Please fill the form below, to generate forecast data</p>
+
+		    </div><!-- end title -->
+
+		    <%= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+
+
+			<table class=table>
+
+			    <%######### Setp.1 Select Initial Conditions ####################################%>
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 1<br>Select Initial Conditions</h4>
+				</td>
+			    </tr>
+
+			    <tr>
+				<td align=right>
+				    Initial Year:
+				</td>
+				<td align=left>
+				    <%= select_tag :ic_year, options_for_select(@ic_year, @ic_year.first), required: true %>
+				</td>
+
+
+				<td align=right>
+				    Initial Month:
+				</td>
+
+				<td align=left class="ic_month">
+				    <%= select_tag :ic_month, options_for_select(@ic_month), prompt:"-Select-", id: "ic_month",  required: true  %>
+				</td>
+			    </tr>
+
+			    <%###################################################################%>
+			    <%######### Setp.2 Select Models ####################################%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 2<br>Select Model Datasets</h4> 
+				</td>
+			    </tr>
+
+			    <% @model_name.each_slice(2) do |model| %>
+				<tr>
+				    <% model.each do |m| %>
+
+					<td align=center colspan=2 >
+					    <%= check_box_tag 'models[]', m.name, checked: true, required: true %>
+					    <%= m.name %>
+					</td>
+
+				    <% end %>
+				    <!-- %# model.each do |m| % -->
+
+				    <% if model.size == 1 %>
+					<td align=center colspan=2 ></td>
+				    <% end %>
+				    <!-- %# if model.size == 1 % -->
+
+				</tr>
+
+			    <% end %>
+			    <!-- % # @model_name.each_slice(2) do |model|  % -->
+
+
+			    <%###################################################################%>
+			    <%######### Setp.3 Select Observation Data #########################%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 3<br>Select Obseravtion Dataset</h4> 
+				</td>
+			    </tr>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    Observation Dataset:
+				    <%= select_tag :obs_data, options_for_select(@obs_name.map {|obs|obs.name}), required: true %>
+				</td>
+
+			    </tr>
+
+
+			    <%###################################################################%>
+			    <%###### Setp.4 Select Years of Model Data & Observation Data #######%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 4<br>Select Years of Model Data & Observation Data</h4> 
+				</td>
+			    </tr>
+			    <tr>
+				<td align=center colspan=4 >
+				    <%= select_tag :sdy, options_for_select(@year_range, @year_range.begin), required: true %> 
+				    --- 
+				    <%= select_tag :edy, options_for_select(@year_range, @year_range.end), required: true %>
+				</td>
+
+			    </tr>
+
+
+			    <%###################################################################%>
+			    <%######### Setp.5 Select Months to do forecast #####################%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 5<br>Select Forecast Months</h4> 
+				</td>
+			    </tr>
+			    <%######################################################%>
+
+			    <tr>
+				<td align=center colspan=4 >
+
+				    <%= select_tag :sfm, options_for_select(@initial_sfm), prompt: "-Select-", id: "sfm", required: true %> 
+				    --- 
+				    <%= select_tag :efm, options_for_select(@initial_sfm), prompt: "-Select- ", id: "efm", required: true %>
+				</td>
+
+			    </tr>
+
+			    <%#############################################%>
+			    <%####### Setp.6 Select Forecast Methods ######%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <h4>Setp 6<br>Select Forecast Methods</h4> 
+				</td>
+			    </tr>
+
+			    <tr>
+
+				<td align=center colspan=4 >
+				    <% Fmethod.select(:id,:name).each do |method| %>
+					<%= check_box_tag 'method_ids[]', method.id, checked: true  %>
+					<%= method.name %>
+				    <%end%>
+				</td>
+
+			    </tr>
+
+			    <%######################################################%>
+
+			    <tr>
+				<td align=center colspan=4 >
+				    <%= submit_tag "Submit & Analyze", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+				</td>
+			    </tr>
+			</table>
+
+		    <% end %>
+		    <!-- #= form_tag({controller: "forecast", action: "output" }, method: :post) do % -->
+
+		</div><!-- end col -->
+	    </div><!-- end row -->
+	</div><!-- end container -->
+    </div>
+</section>
+

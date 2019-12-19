@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @dataset.name %>
+</p>
+
+<p>
+  <strong>Folder Name:</strong>
+  <%= @dataset.fname %>
+</p>
+
+<p>
+  <strong>Data type:</strong>
+  <%= @dataset.dtype %>
+</p>
+
+<p>
+  <strong>Dataset path:</strong>
+  <%= @dataset.dpath %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @dataset.active %>
+</p>
+
+<p>
+  <strong>Remark:</strong>
+  <%= @dataset.remark %>
+</p>
+
+<%= link_to 'Edit', edit_dataset_path(@dataset) %> |
+<%= link_to 'Back', datasets_path %>

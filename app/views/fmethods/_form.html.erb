@@ -1,0 +1,39 @@
+<%= form_with(model: fmethod, local: true) do |form| %>
+  <% if fmethod.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(fmethod.errors.count, "error") %> prohibited this fmethod from being saved:</h2>
+
+      <ul>
+        <% fmethod.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <table class=table>
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :file_name %>
+    <%= form.text_field :file_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :remark1 %>
+    <%= form.text_field :remark1 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :remark2 %>
+    <%= form.text_field :remark2 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+  </table>
+<% end %>

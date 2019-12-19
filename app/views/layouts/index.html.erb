@@ -1,0 +1,22 @@
+<%= render "layouts/parts/head"%>
+
+<body>  
+
+    <%= render "layouts/parts/loader"%>
+
+    <section id="home" class="video-section js-height-full">
+	<div class="overlay"></div>
+
+	<div class="home-text-wrapper relative container">
+	    <div class="home-message">
+
+		<%= yield -%>
+
+	    </div>
+	</div>
+    </section>
+
+    <%= render "layouts/parts/copyright"%>
+
+</body>
+</html>

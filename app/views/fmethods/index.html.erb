@@ -1,0 +1,53 @@
+
+<h1>Forecast Methods Management</h1>
+
+<table class=table>
+    <tr align=center>
+	<td>
+	    <%= button_to 'New Method', new_fmethod_path, method: :get %>
+	</td>
+	<td>
+	    <%= button_to 'Home Page', welcome_home_path, method: :get %>
+	</td>
+    </tr>
+</table>
+
+<p id="notice"><%= notice %></p>
+
+<br>
+
+
+<table class=table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>File</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @fmethods.each do |fmethod| %>
+      <tr>
+        <td><%= fmethod.name %></td>
+        <td><%= fmethod.file_name %></td>
+        <td><%= link_to 'Show', fmethod %></td>
+        <td><%= link_to 'Edit', edit_fmethod_path(fmethod) %></td>
+        <td><%= link_to 'Del', fmethod, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<table class=table>
+    <tr align=center>
+	<td>
+	    <%= button_to 'New Method', new_fmethod_path, method: :get %>
+	</td>
+	<td>
+	    <%= button_to 'Home Page', welcome_home_path, method: :get %>
+	</td>
+    </tr>
+</table>

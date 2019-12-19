@@ -1,0 +1,93 @@
+
+<h3><font color="white">Sign Up</font></h3>
+
+<div class="btn-wrapper">
+
+    <div class="text-center">
+
+	<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+	    <%= render "users/shared/error_messages", resource: resource %>
+
+	    <div class="col-md-6 col-md-offset-3">
+
+		<table class=table>
+
+		    <tr>
+
+			<td align=right>
+			    Name:
+			</td>
+
+			<td align=left>
+			    <%= f.text_field :name, autofocus: true, autocomplete: "name", placeholder: "Name", required: "true" %>
+			</td>
+
+		    </tr>
+
+		    <tr>
+
+			<td align=right>
+			    E-Mail:
+			</td>
+
+			<td align=left>
+			    <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "E-Mail address", required: "true"  %>
+			</td>
+
+		    </tr>
+
+		    <tr>
+			<td align=right>
+			    Organization: 
+			</td>
+			<td align=left>
+			    <%= f.text_field :org, autofocus: true, autocomplete: "org", placeholder: "Organization", required: "true"  %>
+			</td>
+		    </tr>
+
+		    <tr>
+			<td align=right>
+			    Country:
+			</td>
+			<td align=left>
+			    <%= f.select :country, (Country.all.collect {|c| [c.name] }), prompt: "Select country from the list", required: "true"  %>
+			</td>
+
+		    </tr>
+
+		    <tr>
+			<td align=right>
+			    Password:
+			</td>
+			<td align=left>
+			    <%= f.password_field :password, autocomplete: "new-password", placeholder: "New Password", required: "true"  %>
+			</td>
+
+		    </tr>
+
+		    <tr>
+			<td align=right>
+			    Confirm Password:
+			</td>
+			<td align=left>
+			    <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm Password", required: "true"  %>
+			</td>
+
+		    </tr>
+		    <tr>
+			<td align=center colspan=2>
+			    <%= f.submit "Sign up" %>
+			</td>
+
+		    </tr>
+		</table>
+	    </div>
+
+	<% end %>
+
+	<%#= render "users/shared/links" %>
+
+    </div>
+
+</div><!-- end row -->

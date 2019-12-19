@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  iso: MyString
+  slon: 1.5
+  elon: 1.5
+  slat: 1.5
+  elat: 1.5
+  remark: MyText
+
+two:
+  name: MyString
+  iso: MyString
+  slon: 1.5
+  elon: 1.5
+  slat: 1.5
+  elat: 1.5
+  remark: MyText

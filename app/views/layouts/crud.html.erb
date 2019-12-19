@@ -1,0 +1,42 @@
+<%= render "layouts/parts/head"%>
+
+<body>  
+
+    <%= render "layouts/parts/loader"%>
+
+    <section class="section db p120">
+	<div class="container">
+	    <div class="row">
+		<div class="col-md-12">
+		    <div class="tagline-message page-title text-center">
+			<h3>FOCUS</h3>
+			<ul class="breadcrumb">
+			    <li><a href="javascript:void(0)">RIMES</a></li>
+			    <!-- <li class="active">Get in touch</li>-->
+			</ul>
+		    </div>
+		</div><!-- end col -->
+	    </div><!-- end row -->
+	</div><!-- end container -->
+    </section><!-- end section -->
+
+
+    <div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+
+	    <%= yield -%>
+
+	</div><!-- end row -->
+    </div><!-- end class="col-md-6 col-md-offset-3"-->
+
+
+    <%= render "layouts/parts/copyright"%>
+
+    <!-- VIDEO BG PLUGINS -->
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAkADq7R0xf6ami9YirAM1N-yl7hdnYBhM "></script>
+    <!-- MAP & CONTACT -->
+    <script src="/js/map.js"></script>
+
+</body>
+</html>

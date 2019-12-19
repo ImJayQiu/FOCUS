@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Countries Management</h1>
+
+<table class=table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Iso</th>
+      <th>Slon</th>
+      <th>Elon</th>
+      <th>Slat</th>
+      <th>Elat</th>
+      <th>Remark</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @countries.each do |country| %>
+      <tr>
+        <td><%= country.name %></td>
+        <td><%= country.iso %></td>
+        <td><%= country.slon %></td>
+        <td><%= country.elon %></td>
+        <td><%= country.slat %></td>
+        <td><%= country.elat %></td>
+        <td><%= country.remark %></td>
+        <td><%= link_to 'Show', country %></td>
+        <td><%= link_to 'Edit', edit_country_path(country) %></td>
+        <td><%= link_to 'Destroy', country, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Country', new_country_path %>

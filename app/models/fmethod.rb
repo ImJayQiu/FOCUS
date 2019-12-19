@@ -1,0 +1,2 @@
+class Fmethod < ApplicationRecord
+end

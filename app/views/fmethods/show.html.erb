@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @fmethod.name %>
+</p>
+
+<p>
+  <strong>File name:</strong>
+  <%= @fmethod.file_name %>
+</p>
+
+<p>
+  <strong>Remark1:</strong>
+  <%= @fmethod.remark1 %>
+</p>
+
+<p>
+  <strong>Remark2:</strong>
+  <%= @fmethod.remark2 %>
+</p>
+
+<%= link_to 'Edit', edit_fmethod_path(@fmethod) %> |
+<%= link_to 'Back', fmethods_path %>

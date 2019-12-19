@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  fname: MyString
+  dtype: MyString
+  dpath: MyString
+  active: MyString
+  remark: MyString
+
+two:
+  name: MyString
+  fname: MyString
+  dtype: MyString
+  dpath: MyString
+  active: MyString
+  remark: MyString
