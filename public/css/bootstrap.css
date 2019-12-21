@@ -6755,3 +6755,10 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+.rocimgdiv{
+    overflow:hidden;
+    height:200px;
+
+}

@@ -1,0 +1,2 @@
+class Rmethod < ApplicationRecord
+end

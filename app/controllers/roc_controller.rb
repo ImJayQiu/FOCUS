@@ -1,26 +1,9 @@
 require "date"
 require "cdo"
 
-class ForecastController < ApplicationController
+class RocController < ApplicationController
 
     layout "home"
-
-    def debug
-
-	@ic_year = params[:ic_year]
-	@ic_month = params[:ic_month]
-	@models = params[:models]
-	@obs_data = params[:obs_data]
-	@sdy = params[:sdy]
-	@edy = params[:edy]
-	@sfm = params[:sfm]
-	@efm = params[:efm]
-	@user_id = current_user.id
-	@method_ids = params[:method_ids]
-	@method_all = Fmethod.find(params[:method_ids])
-	@methods = @method_all.pluck(:name) 
-
-    end
 
     def result 
 
@@ -30,16 +13,18 @@ class ForecastController < ApplicationController
 
 	@cdo.debug = true
 
-	@ic_year = params[:ic_year]
 	@ic_month = params[:ic_month]
-	@models = params[:models]
+	model_ids = params[:models]
+	model_all = Dataset.find(model_ids) 
+	@models = model_all.pluck(:name) 
+
 	@obs_data = params[:obs_data]
 	@sdy = params[:sdy]
 	@edy = params[:edy]
 	@sfm = params[:sfm]
 	@efm = params[:efm]
 	@method_ids = params[:method_ids]
-	@method_all = Fmethod.find(params[:method_ids])
+	@method_all = Rmethod.find(params[:method_ids])
 
 	@user_id = current_user.id
 	@country_domain = Country.select(:slon,:elon,:slat,:elat).where(name: current_user.country)[0]
@@ -56,17 +41,17 @@ class ForecastController < ApplicationController
 
 	# able to find historical result from this folder
 
-	output_root = "/home/focus/www/focus/public/forecast_output" 
+	output_root = "/home/focus/www/focus/public/roc_output" 
 
 	# final output dir
 
 	@methods = @method_all.pluck(:name) 
 
-	f_dir = "#{@ic_year}_#{@ic_month[0,2]}_#{@models.join('_')}_#{@obs_data}_#{@sdy}_#{@edy}_#{@sfm[0,2]}_#{@efm[0,2]}_#{@methods.join('_')}"
+	f_dir = "#{@ic_month[0,2]}_#{@models.join('_')}_#{@obs_data}_#{@sdy}_#{@edy}_#{@sfm[0,2]}_#{@efm[0,2]}_#{@methods.join('_')}"
 
 	output_dir = "#{output_root}/#{dom_dir}/#{f_dir}"
 
-	@download_dir = "forecast_output/#{dom_dir}/#{f_dir}/"
+	@download_dir = "roc_output/#{dom_dir}/#{f_dir}/"
 
 	###########################################################################
 	########### check if the result is there ############################### 
@@ -98,6 +83,7 @@ class ForecastController < ApplicationController
 
 	end
 
+	@py_cmd_output = ["0","0","0"] 
 	################### new analysis create folder #########################
 
 	mkdir_cmd = "mkdir -p #{output_dir}"
@@ -123,7 +109,7 @@ class ForecastController < ApplicationController
 
 	    mpath = Dataset.select(:dpath).where(name: @models[i])[0].dpath
 
-	    (@sdy..@edy).to_a.append(@ic_year).each do |year|
+	    (@sdy..@edy).to_a.each do |year|
 
 		mfile = "#{mpath}/#{@ic_month[0,2]}/em_*_#{year}.nc"
 
@@ -265,19 +251,17 @@ class ForecastController < ApplicationController
 	################## create params txt ###############################
 	##########################################################################
 
-	params_path = "#{output_dir}/params.txt"
+	models_lower = model_all.pluck(:fname) 
+
+	params_path = "#{output_dir}/params_sv.txt"
 
 	country_iso = Country.select(:iso).where(name: current_user.country)[0]
 
-	#	content = "#{@ic_year}\n #{@ic_month}\n #{@models.join(' ')}\n #{@obs_data}\n #{@sdy}/#{@edy}\n #{@sfm}_#{@efm}\n #{@methods}"
-
 	txt = File.open(params_path, "w")
-
-	txt.puts "#{@ic_year}"
 
 	txt.puts "#{@ic_month}"
 
-	txt.puts "#{@models.join(" ")}/#{@obs_data}"
+	txt.puts "#{models_lower.join(" ")}/#{@obs_data}"
 
 	txt.puts "#{@sdy}/#{@edy}"
 
@@ -296,10 +280,8 @@ class ForecastController < ApplicationController
 	################################################################
 	############ Analysis based on selected methods  ###############
 	################################################################
+	@method_py = @method_all.pluck(:fname) # select ROC method file name 
 
-	@method_py = @method_all.pluck(:file_name) 
-
-	@py_cmds = []
 	@py_cmd_output = []
 
 	@method_py.each do |py_f| 
@@ -307,8 +289,6 @@ class ForecastController < ApplicationController
 	    st = Time.new
 
 	    py_cmd = `time python /FOCUS_DATA/py_methods/#{py_f} #{output_dir.to_s}/` 
-	    py_cmd_check = "python /FOCUS_DATA/py_methods/#{py_f} #{output_dir.to_s}/" 
-	@py_cmds << py_cmd_check 
 
 	    et = Time.new
 
@@ -318,6 +298,9 @@ class ForecastController < ApplicationController
 
 	end
 
+	#	@roc_cmd = "time python /FOCUS_DATA/py_methods/run_std_verify.py #{output_dir.to_s}/" 
+	#	system @roc_cmd
+
 	####################################################	
 	####### list final result #################################
 
@@ -325,9 +308,7 @@ class ForecastController < ApplicationController
 
 	@methods.each do |method| 
 
-	    all_nc_file = Dir["#{output_dir}/#{method}_*.nc"] 
-	    ex_nc_file = Dir["#{output_dir}/*_SERIES_*.nc"] 
-	    nc_file = all_nc_file - ex_nc_file 
+	    nc_file = Dir["#{output_dir}/#{method}_*.nc"] 
 
 =begin
 	    # output data has vertical dimension #####################
@@ -370,7 +351,7 @@ class ForecastController < ApplicationController
 		    gs.puts("set gxout shaded")
 		    gs.puts("set font 1")
 		    gs.puts("set strsiz 0.12")
-		    gs.puts("draw string 1.8 0.1 Initial Condition: #{@ic_year}-#{@ic_month} - #{@sdy}/#{@edy} by FOCUS RIMES.INT")
+		    gs.puts("draw string 1.8 0.1 Initial Condition: #{@ic_month} - #{@sdy}/#{@edy} by FOCUS RIMES.INT")
 		    gs.puts("set mpdset hires")
 		    gs.puts("d #{var}")
 		    #grads_gs.puts("cbar.gs")

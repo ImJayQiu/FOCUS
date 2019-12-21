@@ -29,3 +29,16 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# Ignore layout folder
+/public/layout
+
+# Ignore forecast output
+/public/forecast_output
+
+# Ignore output
+/public/roc_output
+
+# Ignore media source
+/public/upload
+/public/images

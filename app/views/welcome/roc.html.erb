@@ -15,13 +15,13 @@
 
 		    <div class="section-title text-center">
 
-			<h3><%= current_user.country%> Forecast</h3>
+			<h3><%= current_user.country%> R.O.C </h3>
 
-			<p>Please fill the form below, to generate forecast data</p>
+			<p>Please fill the form below, to start R.O.C</p>
 
 		    </div><!-- end title -->
 
-		    <%= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+		    <%= form_tag({controller: "roc", action: "result" }, method: :post) do %>
 
 
 			<table class=table>
@@ -34,15 +34,8 @@
 			    </tr>
 
 			    <tr>
-				<td align=right>
-				    Initial Year:
-				</td>
-				<td align=left>
-				    <%= select_tag :ic_year, options_for_select(@ic_year, @ic_year.first), required: true %>
-				</td>
 
-
-				<td align=right>
+				<td align=right colspan=2 >
 				    Initial Month:
 				</td>
 
@@ -65,7 +58,7 @@
 				    <% model.each do |m| %>
 
 					<td align=center colspan=2 >
-					    <%= check_box_tag 'models[]', m.name, checked: true, required: true %>
+					    <%= check_box_tag 'models[]', m.id, checked: true, required: true %>
 					    <%= m.name %>
 					</td>
 
@@ -151,7 +144,7 @@
 			    <tr>
 
 				<td align=center colspan=4 >
-				    <% Fmethod.select(:id,:name).each do |method| %>
+				    <% Rmethod.select(:id,:name).each do |method| %>
 					<%= check_box_tag 'method_ids[]', method.id, checked: true  %>
 					<%= method.name %>
 				    <%end%>
@@ -169,7 +162,6 @@
 			</table>
 
 		    <% end %>
-		    <!-- #= form_tag({controller: "forecast", action: "output" }, method: :post) do % -->
 
 		</div><!-- end col -->
 	    </div><!-- end row -->

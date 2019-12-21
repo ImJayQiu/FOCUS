@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Rmethods</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Fname</th>
+      <th>Remark</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rmethods.each do |rmethod| %>
+      <tr>
+        <td><%= rmethod.name %></td>
+        <td><%= rmethod.fname %></td>
+        <td><%= rmethod.remark %></td>
+        <td><%= link_to 'Show', rmethod %></td>
+        <td><%= link_to 'Edit', edit_rmethod_path(rmethod) %></td>
+        <td><%= link_to 'Destroy', rmethod, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Rmethod', new_rmethod_path %>

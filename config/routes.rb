@@ -1,15 +1,20 @@
 Rails.application.routes.draw do
 
+  resources :rmethods
     resources :fmethods # forecast methods management
 
     resources :datasets # model datasets and observation datasets management
 
+  resources :roc do
+	collection do
+	    post 'result'
+	end
+    end
+
+
     # forecast form submit to this controller return "result" page
     resources :forecast do
 	collection do
-	    #	get 'index'
-	    #	post 'debug_result'
-	    post 'debug'
 	    post 'result'
 	end
     end

@@ -1,5 +1,5 @@
 <!-- Benchmark -->
-<%= @py_cmds %>
+<%= @modellower %>
 <table class=table >
     <tr>
 	<% @py_cmd_output.each do |info| %> 
@@ -36,8 +36,9 @@
 
 	    <% final[:png].each do |png|  %> 
 		<% png_name =  png.split("/")[-1] %>
+		<% png_count = 12/final[:png].size  %>
 
-		<div class="col-md-4">
+		<div class=<%= "col-md-#{png_count}"%> "rocimgdiv">
 		    <div class="course-box shop-wrapper">
 			<div class="image-wrap entry">
 			    <%= link_to (image_tag  root_url + @download_dir + png_name, class: "img-responsive"), root_url + @download_dir + png_name,  target: :_blank  %>
@@ -61,7 +62,7 @@
 		    <div class="course-details shop-box text-center">
 			<div class="p-3 mb-2 bg-info text-white">
 
-			<%= file_title %><br/><%= link_to "Download NC", root_url + @download_dir + file_name %>
+			    <%= file_title %><br/><%= link_to "Download NC", root_url + @download_dir + file_name %>
 
 			</div>
 		    </div><!-- end box -->
@@ -84,7 +85,7 @@
 
 	<td align=right ><%= p "File Name : " %></td>
 
-	<td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params.txt" %></td>
+	<td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params_sv.txt" %></td>
 
     </tr>
 

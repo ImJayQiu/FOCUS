@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @rmethod.name %>
+</p>
+
+<p>
+  <strong>Fname:</strong>
+  <%= @rmethod.fname %>
+</p>
+
+<p>
+  <strong>Remark:</strong>
+  <%= @rmethod.remark %>
+</p>
+
+<%= link_to 'Edit', edit_rmethod_path(@rmethod) %> |
+<%= link_to 'Back', rmethods_path %>
