@@ -1,0 +1,49 @@
+<table align=center>
+    <tr>
+	<td>
+	    <h1><%= @page_title %></h1>
+	    <h1><%= @debug %></h1>
+	</td>
+    </tr>
+</table>
+
+<% info = @download_dir.split("/")[2].split("_") %> 
+
+<p/>
+
+<table align=center>
+    <tr>
+	<td align=center>
+	  Hindcast Period: <%= info[-7] %> --- <%= info[-6] %>  
+    </td>
+    </tr>
+    <tr>
+	<td align=center>
+	    Months of Forecast: <%= info[-5] %> --- <%= info[-4] %>  
+    </td>
+    </tr>
+
+    <tr>
+	<td><%= @nc_var_data %></td>
+	</tr>
+    <tr>
+	<td align=center>
+	    <%= link_to ">> NetCDF data download <<", root_url + @download_dir + "/" + @final_nc%>
+	</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+<table align=center>
+    <tr>
+	<td>
+	    <%= link_to (image_tag  root_url + @download_dir+ "/" + @small_jpg_raw, class: "img-responsive", width: "600", style: "#{@img_rotate}" ), root_url + @download_dir + "/" + @final_jpg_raw,  target: :_blank  %>
+	</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+

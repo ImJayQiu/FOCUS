@@ -42,3 +42,5 @@ yarn-debug.log*
 # Ignore media source
 /public/upload
 /public/images
+git.cmd
+public

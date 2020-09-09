@@ -1,3 +1,4 @@
+<% if can? :manage, :all %>
 
 <h1>Users Management</h1>
 
@@ -34,9 +35,11 @@
 		<td><%= user.id %></td>
 		<td><%= user.name %></td>
 		<td><%= user.sign_in_count %></td>
+		<% if can? :manage, :all%>
 		<td><%= link_to 'Show', user %></td>
 		<td><%= link_to 'Edit', edit_user_path(user) %></td>
 		<td><%= link_to 'Del', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	    <% end %>
 	    </tr>
 	<% end %>
     </tbody>
@@ -46,6 +49,7 @@
 
 <table class=table>
     <tr align=center>
+	
 	<td>
 	    <%= button_to 'New User', new_user_path, method: :get %>
 	</td>
@@ -55,3 +59,11 @@
     </tr>
 </table>
 
+
+	<%#= @users.pluck(:email) %>
+
+    <% else %>
+
+	<h1>Sorry, the page cannot be found ! </h1>
+
+    <% end %>

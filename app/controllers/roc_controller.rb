@@ -18,21 +18,41 @@ class RocController < ApplicationController
 	model_all = Dataset.find(model_ids) 
 	@models = model_all.pluck(:name) 
 
+	@ic_object = params[:ic_object]
+
+	if @ic_object == "Temperture"
+	    object_path = "temp"
+	elsif @ic_object == "Precipitation"
+	    object_path = "prec"
+	end
+
 	@obs_data = params[:obs_data]
+
 	@sdy = params[:sdy]
+
 	@edy = params[:edy]
+
 	@sfm = params[:sfm]
 	@efm = params[:efm]
 	@method_ids = params[:method_ids]
 	@method_all = Rmethod.find(params[:method_ids])
 
 	@user_id = current_user.id
-	@country_domain = Country.select(:slon,:elon,:slat,:elat).where(name: current_user.country)[0]
 
+=begin
 	slon = @country_domain.slon
 	elon = @country_domain.elon
 	slat = @country_domain.slat
 	elat = @country_domain.elat
+=end
+
+	slon = params[:s_lon][0].to_i 
+	elon = params[:e_lon][0].to_i 
+	slat = params[:s_lat][0].to_i 
+	elat = params[:e_lat][0].to_i 
+
+
+	@country_domain = Country.select(:slon,:elon,:slat,:elat).where(name: current_user.country)[0]
 
 	dom_dir = [slon.to_i, elon.to_i, slat.to_i, elat.to_i].join('_')
 	######################################################################################
@@ -47,7 +67,7 @@ class RocController < ApplicationController
 
 	@methods = @method_all.pluck(:name) 
 
-	f_dir = "#{@ic_month[0,2]}_#{@models.join('_')}_#{@obs_data}_#{@sdy}_#{@edy}_#{@sfm[0,2]}_#{@efm[0,2]}_#{@methods.join('_')}"
+	f_dir = "#{@ic_object}_#{@ic_month[0,2]}_#{@models.join('_')}_#{@obs_data}_#{@sdy}_#{@edy}_#{@sfm[0,2]}_#{@efm[0,2]}_#{@methods.join('_')}"
 
 	output_dir = "#{output_root}/#{dom_dir}/#{f_dir}"
 
@@ -63,11 +83,17 @@ class RocController < ApplicationController
 
 	    @methods.each do |method| 
 
+		if method == "Climatology" then method_full_name = "Climatology" end
+		if method == "ACC" then method_full_name = "Anomaly Correlation Coefficient" end
+		if method == "ROC" then method_full_name = "Relative operating characteristic" end
+		if method == "RMSE" then method_full_name = "Root Mean Square Error" end
+		if method == "SD" then method_full_name = "Standard Deviation" end
+
 		nc_file = Dir["#{output_dir}/#{method}_*.nc"] 
 
 		png_file = Dir["#{output_dir}/#{method}_*.png"] 
 
-		@all_output << {method: method, nc: nc_file, png: png_file}	
+		@all_output << {method: method, nc: nc_file, png: png_file, method_full_name: method_full_name}	
 
 	    end 
 
@@ -111,7 +137,7 @@ class RocController < ApplicationController
 
 	    (@sdy..@edy).to_a.each do |year|
 
-		mfile = "#{mpath}/#{@ic_month[0,2]}/em_*_#{year}.nc"
+		mfile = "#{mpath}/#{object_path}/#{@ic_month[0,2]}/em_*_#{year}.nc"
 
 		selmods << mfile
 
@@ -125,8 +151,10 @@ class RocController < ApplicationController
 	    ########### cut dataset by using country domain ################
 	    ##########################################################################
 
-	    cdo_models = @cdo.sellonlatbox(cdom, input: "#{output_dir}/#{@models[i]}_merge.nc", output: "#{output_dir}/#{@models[i]}.nc" )
+	    #  cdo_models = @cdo.sellonlatbox(cdom, input: "#{output_dir}/#{@models[i]}_merge.nc", output: "#{output_dir}/#{@models[i]}.nc" )
 
+	    seldomain = "cdo sellonlatbox,#{cdom} #{output_dir}/#{@models[i]}_merge.nc #{output_dir}/#{@models[i]}.nc "
+	    system(seldomain) 
 
 	    ########## select forecast month ##############################
 	    ##########################################################################
@@ -209,7 +237,7 @@ class RocController < ApplicationController
 
 	(@sdy..@edy).to_a.each do |year|
 
-	    obfile = "#{obspath}/#{@ic_month[0,2]}/ob_*_#{year}.nc"
+	    obfile = "#{obspath}/#{object_path}/#{@ic_month[0,2]}/ob_*_#{year}.nc"
 
 	    selobs << obfile
 
@@ -219,7 +247,7 @@ class RocController < ApplicationController
 
 	### if select ERA5 as observation ############### 
 
-	if @obs_data = "ERA5"
+	if @obs_data == "ERA5"
 
 	    cdo_sellonlat = @cdo.sellonlatbox(cdom, input: cdo_merge )
 
@@ -348,14 +376,17 @@ class RocController < ApplicationController
 		    gs.puts("reinit")
 		    gs.puts("open #{current_plot_nc[0..-4]}.ctl")
 		    gs.puts("set grads off")
-		    gs.puts("set gxout shaded")
+		    gs.puts("set gxout grfill")
 		    gs.puts("set font 1")
 		    gs.puts("set strsiz 0.12")
 		    gs.puts("draw string 1.8 0.1 Initial Condition: #{@ic_month} - #{@sdy}/#{@edy} by FOCUS RIMES.INT")
 		    gs.puts("set mpdset hires")
+		    gs.puts("set mpt 0 15 1 6")
+		    gs.puts("set mpt 1 off")
+		    gs.puts("set mpt 2 off")
 		    gs.puts("d #{var}")
-		    #grads_gs.puts("cbar.gs")
-		    gs.puts("draw title #{method} Forecast of #{current_user.country} - (#{var})")
+		    gs.puts("/FOCUS_DATA/GRADS_source/xcbar.gs 9 9.3 1.5 7.0 ")
+		    gs.puts("draw title #{method} Verification")
 		    gs.puts("printim #{method}_#{var}.png png white")
 		    gs.puts("quit")
 		    gs.close
@@ -379,11 +410,18 @@ class RocController < ApplicationController
 
 	@methods.each do |method| 
 
+	    if method == "Climatology" then method_full_name = "Climatology" end
+	    if method == "ACC" then method_full_name = "Anomaly Correlation Coefficient" end
+	    if method == "ROC" then method_full_name = "Relative operating characteristic" end
+	    if method == "RMSE" then method_full_name = "Root Mean Square Error" end
+	    if method == "SD" then method_full_name = "Standard Deviation" end
+
+
 	    nc_file = Dir["#{output_dir}/#{method}_*.nc"] 
 
 	    png_file = Dir["#{output_dir}/#{method}_*.png"] 
 
-	    @all_output << {method: method, nc: nc_file, png: png_file}	
+	    @all_output << {method: method, nc: nc_file, png: png_file, method_full_name: method_full_name}	
 
 	end 
 

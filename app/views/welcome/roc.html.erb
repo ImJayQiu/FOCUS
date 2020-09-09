@@ -4,76 +4,107 @@
 
 	<div class="boxed boxedp4">
 
-	    <div>
-
-		<img src=<%="#{root_url}/upload/countries/#{$country_iso}.jpg"%> alt="Country Map" height=100% width=100% />
-	    </div>
+	    <div id="map"></div>
 
 	    <div class="row">
 
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-12">
 
 		    <div class="section-title text-center">
 
-			<h3><%= current_user.country%> R.O.C </h3>
+			<h3>Verification of Multi-model Ensemble Forecast </h3>
 
-			<p>Please fill the form below, to start R.O.C</p>
+			<p>Please fill the form below, to start verification</p>
 
 		    </div><!-- end title -->
 
 		    <%= form_tag({controller: "roc", action: "result" }, method: :post) do %>
 
+			<table id="result" align=center>
 
-			<table class=table>
+			    <tr>
+				<td colspan=10>Location Region</td>
+			    </tr>
 
-			    <%######### Setp.1 Select Initial Conditions ####################################%>
+			    <tr>
+				<td></td>
+				<td>W:</td>
+				<td>
+				    <%= text_field :s_lon, params[:s_lon], class: "slon",  required: true rescue nil %>
+				</td>
+				<td>E:</td>
+				<td>
+				    <%= text_field :e_lon, params[:e_lon], class: "elon",  required: true rescue nil %>
+				</td>
+				<td>S:</td>
+				<td>
+				    <%= text_field :s_lat, params[:s_lat], class: "slat",  required: true rescue nil %>
+				</td>
+				<td>N:</td>
+				<td>
+				    <%= text_field :e_lat, params[:e_lat], class: "elat",  required: true rescue nil %>
+				</td>
+				<td></td>
+			    </tr>
+			</table>
+
+			<%######### Setp.1 Select Initial Conditions ####################################%>
+
+			<table class="table">
 			    <tr>
 				<td align=center colspan=4 >
-				    <h4>Setp 1<br>Select Initial Conditions</h4>
+				    <h4>Step 1<br>Select Initial Conditions</h4>
 				</td>
 			    </tr>
 
 			    <tr>
-
-				<td align=right colspan=2 >
-				    Initial Month:
+				<td align=right >
+				    Parameter:
 				</td>
+				    <td align=left >
+					<%= select_tag :ic_object, options_for_select(["Precipitation","Temperture"], ["Precipitation"]), required: true %>
+				    </td>
 
-				<td align=left class="ic_month">
-				    <%= select_tag :ic_month, options_for_select(@ic_month), prompt:"-Select-", id: "ic_month",  required: true  %>
-				</td>
+				    <td align=right>
+					Initial Month:
+				    </td>
+
+				    <td align=left class="ic_month">
+					<%= select_tag :ic_month, options_for_select(@ic_month), prompt:"-Select-", id: "ic_month",  required: true  %>
+				    </td>
 			    </tr>
 
-			    <%###################################################################%>
-			    <%######### Setp.2 Select Models ####################################%>
+			</table>
+			<%###################################################################%>
+			<%######### Setp.2 Select Models ####################################%>
 
-			    <tr>
-				<td align=center colspan=4 >
-				    <h4>Setp 2<br>Select Model Datasets</h4> 
-				</td>
-			    </tr>
-
-			    <% @model_name.each_slice(2) do |model| %>
+			    <table class=table>
 				<tr>
-				    <% model.each do |m| %>
-
-					<td align=center colspan=2 >
-					    <%= check_box_tag 'models[]', m.id, checked: true, required: true %>
-					    <%= m.name %>
-					</td>
-
-				    <% end %>
-				    <!-- %# model.each do |m| % -->
-
-				    <% if model.size == 1 %>
-					<td align=center colspan=2 ></td>
-				    <% end %>
-				    <!-- %# if model.size == 1 % -->
-
+				    <td align=center colspan=4 >
+					<h4>Step 2<br>Select Model Datasets</h4> 
+				    </td>
 				</tr>
 
-			    <% end %>
-			    <!-- % # @model_name.each_slice(2) do |model|  % -->
+				<tr>
+				    <td align=center colspan=4 >
+
+					<table class=models_select>
+					    <% @model_name.each_slice(3) do |model| %>
+					    <tr>
+						<% model.each do |m| %>
+						    <td align=left colspan=1 >
+							<%= check_box_tag 'models[]', m.id, checked: true, required: true %>
+							<%= m.name %>
+						    </td>
+						    <% end # model.each do |m| %>
+							<!-- %# model.each do |m| % -->
+					    </tr>
+
+					<% end %>
+					<%  # @model_name.each_slice(3) do |model| %>
+					    </table>
+				    </td>
+				</tr>
 
 
 			    <%###################################################################%>
@@ -137,7 +168,7 @@
 
 			    <tr>
 				<td align=center colspan=4 >
-				    <h4>Setp 6<br>Select Forecast Methods</h4> 
+				    <h4>Setp 6<br>Select Verification methods.<br>Probabilistic and Deterministic</h4> 
 				</td>
 			    </tr>
 
@@ -168,4 +199,28 @@
 	</div><!-- end container -->
     </div>
 </section>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/leaflet.js"></script>
+<script src="/js/leaflet-areaselect.js"></script>
+<script>
+    // initialize map
+    var map = L.map('map').setView([<%= @c_lat %>, <%= @c_lon %>], 3);
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+$(window).on("resize", function() {
+    $("#map").height($(window).height()*0.5).width($(window).width()*0.8);
+    map.invalidateSize();
+}).trigger("resize");
+var areaSelect = L.areaSelect({width:150, height:150});
+areaSelect.on("change", function() {
+    var bounds = this.getBounds();
+    $("#result .slat").val(bounds.getSouthWest().lat.toFixed(3));
+    $("#result .elat").val(bounds.getNorthEast().lat.toFixed(3));
+    $("#result .slon").val(bounds.getSouthWest().lng.toFixed(3));
+    $("#result .elon").val(bounds.getNorthEast().lng.toFixed(3));
+});
+areaSelect.addTo(map);
+</script>
 

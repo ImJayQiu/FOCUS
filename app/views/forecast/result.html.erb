@@ -1,93 +1,506 @@
-<!-- Benchmark -->
-<%= @py_cmds %>
-<table class=table >
-    <tr>
-	<% @py_cmd_output.each do |info| %> 
-	<td align = center><%= info[:file] rescue nil %><br/><%= info[:time] rescue nil %></td>
-    <%end%>
-    <td align = center><%= "Plot Maps" %><br/><%= @plot_time rescue nil %></td>
-    <td align = center><%= "Total" %><br/><%= @total_analysis_time rescue nil %></td>
-    </tr>
-</table>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+</head>
 
-<!-- Benchmark end -->
+
+
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
 	<div class="section-title text-center">
-	    <h1>Forecast Result of <%= current_user.country %></h1>
+	    <h1>Forecast Result of <%= @ic_object %> </h1>
+	    <h4>Hindcast Period: <%= @sdy %> to <%= @edy %> | Forecast Year: <%= @ic_year %>-<%=@ic_month%></h4>
+	    <h4>Forecast Months: <%= @fmonths %> </h4>
+	    <h4>debug: <%= @debug %> </h4>
 	</div>
     </div>
 </div>
 
-<!-- Page Title end -->
+<%############################################################################################################%>
 
-<% @all_output.each do |final|  %> 
+<div class="col-md-12">
+    <div class="course-details shop-box text-center">
+	<div class="p-3 mb-2 bg-info text-white">
+	    <% if @commit == 'Check Models' %>
+		<h2>Check Models</h2>
+	    <%else%>
+		<h2>Probability Forecast</h2>
+	    <%end%>
+	</div>
+    </div>
+</div>
+
+<% if @commit == 'Check Models' %>
+
+    <%############################ Datasets availability check ##########################################%>
+    <div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+	    <table class=table>
+
+		<tr>
+		    <td>Models<br>Years</td>
+		    <% @models.sort.each do |model| %>
+			<td><small><div style='width: 50px;'><%=model%></div></small></td>
+		    <% end %>
+		</tr>
+
+		<% @years_check.sort.reverse.each do |year| %>
+		    <tr>
+			<td><small><%=year%></small></td>
+
+			<% @models.sort.each do |model| %>
+
+			    <% if @data_check.to_h[model].include?(year) %>
+
+				<td><img src="/images/cross.png" width="20" height="20"></td>
+
+			    <% else %>
+
+				<td><img src="/images/check.png" width="20" height="20"></td>
+
+			    <% end %>
+
+			<% end %>
+
+		    </tr>
+
+		<% end %>
+
+		<tr>
+		    <td>Models<br>Year</td>
+		    <% @models.sort.each do |model| %>
+			<td><small><div style='width: 50px;'><%=model%></div></small></td>
+		    <% end %>
+		</tr>
+
+	    </table>
+
+	    <table class=table>
+
+		<% missing_info = @data_check.to_h.delete_if {|k,v| v.empty?} %>
+		<% missing_models =  missing_info.keys %>
+		<% missing_years =  missing_info.values %>
+
+		<% if missing_info.empty? %>
+
+		    <%############################# Submit anyway #######################################%>
+		    <%= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+
+			<%= hidden_field_tag :ic_object, @ic_object %>
+			<%= hidden_field_tag :ic_year, @ic_year %>
+			<%= hidden_field_tag :ic_month, @ic_month  %>
+			<%= hidden_field_tag :sfm, @sfm %> 
+			<%= hidden_field_tag :efm, @efm %>
+			<%= hidden_field_tag :obs_data, @obs_data %>
+			<%= hidden_field_tag :sdy, @sdy %> 
+			<%= hidden_field_tag :edy, @edy %>
+			<% @method_ids.each do |id| %>
+			    <%= hidden_field_tag 'method_ids[]', id %>
+			<% end %>
+			<% @models.each do |m| %>
+			    <%= hidden_field_tag 'models[]', m %>
+			<%end%>
+
+			<tr><td align = center>
+				<%= submit_tag "Submit & Analyze", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+				<br>
+				<small>* All datasets are ready !</small>
+			    </td></tr>
+			<% end %>
+			<%############################# Submit anyway #######################################%>
+
+		    <% else %>
+
+			<tr><td align = center>
+				<small>* Some datasets are missing, please select one of the options below.</small>
+			    </td></tr>
+
+
+			    <%############################# Submit without missing years #######################################%>
+			    <%= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+
+				<%= hidden_field_tag :ic_object, @ic_object %>
+				<%= hidden_field_tag :ic_year, @ic_year %>
+				<%= hidden_field_tag :ic_month, @ic_month  %>
+				<%= hidden_field_tag :sfm, @sfm %> 
+				<%= hidden_field_tag :efm, @efm %>
+				<%= hidden_field_tag :obs_data, @obs_data %>
+				<%= hidden_field_tag :sdy, @sdy %> 
+				<%= hidden_field_tag :edy, @edy %>
+				<%= hidden_field_tag :missing_years, missing_years %>
+				<% @method_ids.each do |id| %>
+				    <%= hidden_field_tag 'method_ids[]', id %>
+				<% end %>
+				<% @models.each do |m| %>
+				    <%= hidden_field_tag 'models[]', m %>
+				<%end%>
+				<tr><td align = center>
+					<%= submit_tag "Submit without incomplete years", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+				    </td></tr>
+				<% end %>
+				<%############################# Submit without missing years #######################################%>
+
+
+				<%############################# Submit without missing models #######################################%>
+				<%= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+
+				    <%= hidden_field_tag :ic_object, @ic_object %>
+				    <%= hidden_field_tag :ic_year, @ic_year %>
+				    <%= hidden_field_tag :ic_month, @ic_month  %>
+				    <%= hidden_field_tag :sfm, @sfm %> 
+				    <%= hidden_field_tag :efm, @efm %>
+				    <%= hidden_field_tag :obs_data, @obs_data %>
+				    <%= hidden_field_tag :sdy, @sdy %> 
+				    <%= hidden_field_tag :edy, @edy %>
+				    <%= hidden_field_tag :missing_models, missing_models %>
+				    <% @method_ids.each do |id| %>
+					<%= hidden_field_tag 'method_ids[]', id %>
+				    <% end %>
+				    <% @models.each do |m| %>
+					<%= hidden_field_tag 'models[]', m %>
+				    <%end%>
+
+				    <tr><td align = center>
+					    <%= submit_tag "Submit without incomplete models", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+					</td></tr>
+				    <% end %>
+				    <%############################# Submit without missing years #######################################%>
+
+
+				    <%############################# Submit intersection #######################################%>
+				    <%#= form_tag({controller: "forecast", action: "result" }, method: :post) do %>
+
+					<%#= hidden_field_tag :ic_object, @ic_object %>
+					<%#= hidden_field_tag :ic_year, @ic_year %>
+					<%#= hidden_field_tag :ic_month, @ic_month  %>
+					<%#= hidden_field_tag :sfm, @sfm %> 
+					<%#= hidden_field_tag :efm, @efm %>
+					<%#= hidden_field_tag :obs_data, @obs_data %>
+					<%#= hidden_field_tag :sdy, @sdy %> 
+					<%#= hidden_field_tag :edy, @edy %>
+					<%#= hidden_field_tag :missing_models, missing_models %>
+					<%#= hidden_field_tag :missing_years, missing_years %>
+					<%# @method_ids.each do |id| %>
+					    <%#= hidden_field_tag 'method_ids[]', id %>
+					<%# end %>
+					<%# @models.each do |m| %>
+					    <%#= hidden_field_tag 'models[]', m %>
+					<%# end %>
+
+					<tr><td align = center>
+						<%#= submit_tag "Submit intersection", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+					    </td></tr>
+					<%# end %>
+					<%############################# Submit intersection #######################################%>
+
+
+					<% end # if missing_info.nil? %>
+
+					<tr><td align = center>
+						<%= button_to "Back", forecast_welcome_index_path, method: :get %></p>
+					    </td></tr>
+
+	    </table>
+	</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%else%>
+
+    <%####################### Forecast output ###############################################%>
+    <!-- Page Title end -->
+
     <div class="wrapper">
 	<div class="course-box shop-wrapper">
 
-	    <div class="row">
-		<div class="col-md-6 col-md-offset-3">
-		    <div class="section-title text-center">
-			<h3><%= final[:method] %> Forecast</h3>
-		    </div>
-		</div>
-	    </div>
 
-	    <% final[:png].each do |png|  %> 
-		<% png_name =  png.split("/")[-1] %>
+	    <% @fin_output.each_with_index do |final,i|  %> 
 
-		<div class="col-md-4">
-		    <div class="course-box shop-wrapper">
-			<div class="image-wrap entry">
-			    <%= link_to (image_tag  root_url + @download_dir + png_name, class: "img-responsive"), root_url + @download_dir + png_name,  target: :_blank  %>
-			</div>
-			<!-- end image-wrap -->
-			<div class="course-details shop-box text-center">
-			    <h4>
-				<%= link_to "#{png_name[0..-5]}", root_url + @download_dir + png_name,  target: :_blank  %>
-			    </h4>
-			</div><!-- end details -->
-		    </div><!-- end box -->
-		</div><!-- end col -->
+		<% img_count = 12/@fin_output.size %>
 
-	    <% end %><!-- @final_png -->
+		<% final[:cp].each do |cp|  %> 
 
-	    <% final[:nc].each do |nc|  %> 
-		<% file_name =  nc.split("/")[-1] %>
-		<% file_title = file_name[0...-3].split("_")[0..1].join("-") %>
+		    <% cp_name = cp.split("/")[-1] %>
 
-		<div class="col-md-6">
-		    <div class="course-details shop-box text-center">
-			<div class="p-3 mb-2 bg-info text-white">
+		    <div class="col-md-<%=img_count%>">
+			<div class="course-box shop-wrapper">
+			    <div class="image-wrap2 entry">
 
-			<%= file_title %><br/><%= link_to "Download NC", root_url + @download_dir + file_name %>
+				<table align=center>
+				    <tr>
+					<td align=center>
+					    <h4><%= final[:method_full_name] %></h4>
+					    <h5>Probability Forecast</h5>
 
-			</div>
-		    </div><!-- end box -->
-		</div><!-- end col -->
+					    <div id="map<%=i%>" style="width: 400px; height: 400px;"></div>
 
-	    <% end %><!-- @final_nc_file -->
+					</td>
+				    </tr>
 
+				</table>
+
+				<script>
+
+				    var mymap<%=i%> = L.map(<%="map#{i}"%>).setView([<%=@clat%>,<%=@clon%>], 2);
+
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    maxZoom: 8,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+}).addTo(mymap<%=i%>);
+
+var imageUrl = "<%= root_url + @download_dir+ "/" + cp_name %>",
+    imageBounds = [[<%=@slat%>, <%=@slon%>], [<%=@elat%>, <%=@elon%>]];
+L.imageOverlay(imageUrl, imageBounds).setOpacity(0.8).addTo(mymap<%=i%>);
+
+var popup = L.popup();
+
+function onMapClick(e) {
+    popup
+	.setLatLng(e.latlng)
+	.setContent(e.latlng.toString() + "<a href='/forecast/probpoint?lat="+ e.latlng.lat + "&amp;lon=" + e.latlng.lng + "&amp;info=<%= @output_dir.to_s %>&amp;method=<%= final[:method] %>'> View Detail </a>")
+	.openOn(mymap<%=i%>);
+}
+
+mymap<%=i%>.on('click', onMapClick);
+
+				</script>
+			    </div>
+			    <!-- end image-wrap -->
+			    <div class="course-details shop-box text-center">
+				<h5><%= link_to "Download Image", root_url + @download_dir + final[:method] +"_PROB_final_rotate.png" ,  target: :_blank  %></h5>
+			    </div><!-- end details -->
+			</div><!-- end box -->
+		    </div><!-- end col -->
+		<% end %><!-- final[:cp].each_with_index -->
+
+
+		<% ################ Probabilities forecast session ################################ %>
+		<% ################ end Probabilities forecast session ################################ %>
+
+	    <% end %> <!-- # @all_output  --> 
 
 	</div> <!-- class="wrapper" -->
     </div> <!-- class="course-box shop-wrapper" -->
 
-<% end %> <!-- # @all_output  --> 
+    <% ################ Deterministic forecast session ################################ %>
 
-<!-- ######################### end css layout ##################### -->
-
-
-<table class=table >
-
-    <tr>
-
-	<td align=right ><%= p "File Name : " %></td>
-
-	<td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params.txt" %></td>
-
-    </tr>
-
-</table>
+    <div class="col-md-12">
+	<div class="course-details shop-box text-center">
+	    <div class="p-3 mb-2 bg-info text-white">
+		<h2>Deterministic Forecast</h2>
+	    </div>
+	</div>
+    </div>
 
 
+    <div class="col-md-4">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+
+		<div class="course-details shop-box text-center">
+		    <%= link_to (image_tag  root_url + "images/anom.png", class: "img-responsive", title: "Anomaly"), action: "anomaly", dir: @download_dir, fmonths: @fmonths,  target: :_blank  %>
+		    <h4><%= link_to "Anomaly", action: "anomaly", dir: @download_dir, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+    <div class="col-md-4">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/dept.png", class: "img-responsive", title: "Departure"), action: "departure", dir: @download_dir, fmonths: @fmonths,  target: :_blank  %>
+		    <h4><%= link_to "Departure", action: "departure",dir: @download_dir , fmonths: @fmonths , fin_output: @fin_output %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <div class="col-md-4">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/corr.png", class: "img-responsive", title: "Correlation"), action: "corr", dir: @download_dir, fmonths: @fmonths,  target: :_blank  %>
+		    <h4><%= link_to "Correlation", action: "corr", dir: @download_dir , fmonths: @fmonths , fin_output: @fin_output %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <%########################################################################################################%>
+
+    <div class="col-md-12">
+	<div class="course-details shop-box text-center">
+	    <div class="p-3 mb-2 bg-info text-white">
+		<h3>Forecast Analysis</h3>
+	    </div>
+	</div>
+    </div>
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/clim.png", class: "img-responsive", title: "Climatology"), action: "climatology",  dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank  %>
+		    <h4><%= link_to "Climatology", action: "climatology", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/acc.png", class: "img-responsive", title: "Anomaly Correlation Coefficient"), action: "acc", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank  %>
+		    <h4><%= link_to "Anomaly Correlation", action: "acc", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/sd.png", class: "img-responsive", title: "Standard Deviation"), action: "sd", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths,  target: :_blank  %>
+
+		    <h4><%= link_to "Standard Deviation", action: "sd", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/rmse.png", class: "img-responsive", title: "Root Mean Square Error"), action: "rmse",  dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank %>
+		    <h4><%= link_to "Root Mean Square Error", action: "rmse", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+    <!-- ######################### end css layout ##################### -->
+
+
+
+
+
+    <table class=table >
+
+	<tr>
+
+	    <td align=right ></td>
+
+	    <td align=left ></td>
+
+	</tr>
+
+
+	<tr>
+
+	    <td align=right >Initial Condition:</td>
+
+	    <td align=left ><%= "#{@ic_year} | #{@ic_month} " %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Models:</td>
+
+	    <td align=left ><%= "#{@models.join(' ')} " %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Observation:</td>
+
+	    <td align=left ><%= "#{@obs_data}" %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Hindcast:</td>
+
+	    <td align=left ><%= "#{@sdy} to #{@edy}"%></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Forecast Months:</td>
+
+	    <td align=left ><%= "#{@fmonths}"%></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right ><%= p "File Name : " %></td>
+
+	    <td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params.txt" %></td>
+
+	</tr>
+
+    </table>
+
+<% end %>

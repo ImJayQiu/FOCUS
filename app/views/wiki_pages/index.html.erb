@@ -1,0 +1,48 @@
+
+<h1>FOCUS Wiki Pages</h1>
+
+<br>
+
+<p id="notice"><%= notice %></p>
+
+<%= button_to 'New Wiki Page', new_wiki_page_path, method: :get %>
+
+<br>
+
+<table class=table>
+    <thead>
+	<tr>
+	    <th>Chapter</th>
+	    <th>H1</th>
+	    <th>H2</th>
+	    <th>H3</th>
+	    <th>Title</th>
+	    <% if can? :manage, :all %>
+		<th colspan="3"></th>
+	    <% end %>
+	</tr>
+    </thead>
+
+    <tbody>
+	<% @wiki_pages.each do |wiki_page| %>
+	    <tr>
+		<td><%= wiki_page.chapter %></td>
+		<td><%= wiki_page.heading1 %></td>
+		<td><%= wiki_page.heading2 %></td>
+		<td><%= wiki_page.heading3 %></td>
+		<td><%= wiki_page.title %></td>
+		<% if can? :manage, :all %>
+		    <td><%= link_to 'Show', wiki_page %></td>
+		    <td><%= link_to 'Edit', edit_wiki_page_path(wiki_page) %></td>
+		    <td><%= link_to 'Del', wiki_page, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		<% end %>
+	    </tr>
+	<% end %>
+    </tbody>
+</table>
+
+<br>
+
+<%= button_to 'New Wiki Page', new_wiki_page_path, method: :get %>
+
+<br>

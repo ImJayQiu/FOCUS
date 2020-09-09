@@ -1,84 +1,107 @@
 
 <!-- LOADER --> 
-    <div id="preloader">
-	<img class="preloader" src="/images/loader.gif" alt="">
-    </div><!-- end loader -->
-    <!-- END LOADER -->
+<div id="preloader">
+    <img class="preloader" src="/images/loader.gif" alt="">
+</div><!-- end loader -->
+<!-- END LOADER -->
 
-    <div id="wrapper">
-	<!-- BEGIN # MODAL LOGIN -->
-	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-	    <div class="modal-dialog">
-		<div class="modal-content">
-		    <!-- Begin # DIV Form -->
-		    <div id="div-forms">
-			<form id="login-form">
-			    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span class="flaticon-add" aria-hidden="true"></span>
-			    </button>
-			    <div class="modal-body">
-				<input class="form-control" type="text" placeholder="What you are looking for?" required>
-			    </div>
-			</form><!-- End # Login Form -->
-		    </div><!-- End # DIV Form -->
-		</div>
+<div id="wrapper">
+    <!-- BEGIN # MODAL LOGIN -->
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+		<!-- Begin # DIV Form -->
+		<div id="div-forms">
+		    <form id="login-form">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			    <span class="flaticon-add" aria-hidden="true"></span>
+			</button>
+			<div class="modal-body">
+			    <input class="form-control" type="text" placeholder="What you are looking for?" required>
+			</div>
+		    </form><!-- End # Login Form -->
+		</div><!-- End # DIV Form -->
 	    </div>
 	</div>
-	<!-- END # MODAL LOGIN -->
+    </div>
+    <!-- END # MODAL LOGIN -->
 
-	<header class="header">
-	    <div class="topbar clearfix">
-		<div class="container">
-		    <div class="row-fluid">
-			<div class="col-md-6 col-sm-6 text-left">
-			    <p>
-			    <strong><i class="fa fa-phone"></i></strong> +662 516 5900 - 01 &nbsp;&nbsp;
-			    <strong><i class="fa fa-envelope"></i></strong> <a href="mailto:#">focus@rimes.int</a>
-			    </p>
-			</div><!-- end left -->
-			<div class="col-md-6 col-sm-6 hidden-xs text-right">
-			    <div class="social">
-				<a class="facebook" href="https://www.facebook.com/rimes.int/" data-tooltip="tooltip" data-placement="bottom" title="Facebook"><i class="fa fa-facebook"></i></a>              
-			    </div><!-- end social -->
-			</div><!-- end left -->
-		    </div><!-- end row -->
-		</div><!-- end container -->
-	    </div><!-- end topbar -->
-
+    <header class="header">
+	<div class="topbar clearfix">
 	    <div class="container">
-		<nav class="navbar navbar-default yamm">
-		    <div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-			    <span class="sr-only">Toggle navigation</span>
-			    <span class="icon-bar"></span>
-			    <span class="icon-bar"></span>
-			    <span class="icon-bar"></span>
-			</button>
-			<div class="logo-normal">
-			    <a class="navbar-brand" href="/"><img src="/upload/rimes-logo-s.png" alt=""></a>
-			</div>
-		    </div>
-
-		    <div id="navbar" class="navbar-collapse collapse">
-			<ul class="nav navbar-nav navbar-right">
-			    <li><a href="/">Home</a></li>
-
-			    <li>
-				<% if user_signed_in? %>
-				    <li>
-					<%= link_to('Logout', destroy_user_session_path, method: :delete) %> 
-				    </li>
-				<% else %>
-				    <li>
-					<%= link_to('Login', new_user_session_path) %>  
-				    </li>
-				<% end %>
-			    </li>
-
-			</ul>
-		    </div>
-		</nav><!-- end navbar -->
+		<div class="row-fluid">
+		    <div class="col-md-6 col-sm-6 text-left">
+			<p>
+			<strong><i class="fa fa-phone"></i></strong> +662 516 5900 - 01 &nbsp;&nbsp;
+			<strong><i class="fa fa-envelope"></i></strong> <a href="mailto:#">focus@rimes.int</a>
+			</p>
+		    </div><!-- end left -->
+		    <div class="col-md-6 col-sm-6 hidden-xs text-right">
+			<div class="social">
+			    <a class="facebook" href="https://www.facebook.com/rimes.int/" data-tooltip="tooltip" data-placement="bottom" title="Facebook"><i class="fa fa-facebook"></i></a>              
+			</div><!-- end social -->
+		    </div><!-- end left -->
+		</div><!-- end row -->
 	    </div><!-- end container -->
-	</header>
+	</div><!-- end topbar -->
+
+	<div class="container">
+	    <nav class="navbar navbar-default yamm">
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Navi.</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		    </button>
+		    <!--
+		    <div class="logo-normal">
+			<a class="navbar-brand" href="/"><img src="/upload/rimes-logo-s.png" alt=""></a>
+			<a class="navbar-brand" href="/"><img src="/upload/wmo-logo-s.png" alt=""></a>
+			<a class="navbar-brand" href="/"><img src="/upload/imd-logo-s.png" alt=""></a>
+			<a class="navbar-brand" href="/"><img src="/upload/ukmet-logo-s.png" alt=""></a>
+			<a class="navbar-brand" href="/"><img src="/upload/ukaid-logo-s.png" alt=""></a>
+			<a class="navbar-brand" href="/"><img src="/upload/arrcc-logo-s.png" alt=""></a>
+			</div>
+		    -->
+		</div>
+
+		<div id="navbar" class="navbar-collapse collapse">
+		    <ul class="nav navbar-nav navbar-right">
+
+			<li><a href="/welcome/home">Home</a></li>
+			
+			<li class="dropdown hassubmenu">
+			    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About<span class="fa fa-angle-down"></span></a>
+			    <ul class="dropdown-menu" role="menu">
+				<li><a href="/about.html">About FOCUS</a></li>
+				<li><a href="/wiki_pages/wikifocus">Wiki</a></li>
+			    </ul>
+			</li>
+
+			<li class="dropdown hassubmenu">
+			    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="fa fa-angle-down"></span></a>
+			    <ul class="dropdown-menu" role="menu">
+			    <% if user_signed_in? %>
+				<li>
+				    <%= link_to('Logout', destroy_user_session_path, method: :delete) %> 
+				</li>
+			    <% else %>
+				<li>
+				    <%#= link_to('Login', new_user_session_path) %>  
+				    <%= link_to('Login', thankyou_welcome_index_path) %>  
+				</li>
+			    <% end %>
+			</ul>
+			</li>
+
+		    </ul>
+		</div>
+	    </nav><!-- end navbar -->
+	</div><!-- end container -->
+
+
+
+    </header>
 
 

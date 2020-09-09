@@ -10,7 +10,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
 	    t.string :org,              null: false, default: "" # which company or organization
 	    t.string :position,              null: false, default: "" # job position
 	    t.string :role,              null: false, default: "" # for system permissions
-	    t.string :remark1,              null: false, default: "" # remark 1 
+	    t.string :remark1,              null: false, default: "" # remark 1 = role 
 	    t.string :remark2,              null: false, default: "" # just in case 
 	    t.string :remark3,              null: false, default: "" # just in case 
 	    t.string :email,              null: false, default: ""

@@ -1,0 +1,113 @@
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+</head>
+
+<table align=center>
+    <tr>
+	<td>
+	    <h1><%= @page_title %></h1>
+	    <h1><%#= @debug %></h1>
+	</td>
+    </tr>
+</table>
+
+<% info = @download_dir.split("/")[2].split("_") %> 
+
+<p/>
+
+<table align=center>
+    <tr>
+	<td align=center>
+	    Hindcast Period: <%= info[-7] %> --- <%= info[-6] %>  
+    </td>
+    </tr>
+    <tr>
+	<td align=center>
+	    Months of Forecast: <%= info[-5] %> --- <%= info[-4] %>  
+    </td>
+    </tr>
+
+    <tr>
+	<td><%#= @nc_var_data %></td>
+    </tr>
+    <tr>
+	<td align=center>
+	    <%#= link_to ">> NetCDF data download <<", root_url + @download_dir + "/" + @final_nc%>
+	</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+<table align=center>
+    <tr>
+	<td>
+	    <%= link_to (image_tag  root_url + @download_dir+ "/" + @final_png, class: "img-responsive", width: "600", style: "#{@img_rotate}" ), root_url + @download_dir + "/" + @final_png,  target: :_blank  %>
+	</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+<table align=center>
+    <tr>
+	<td>
+	    <%= image_tag  root_url + @download_dir+ "/" + @final_png, class: "img-responsive", width: "600", style: "#{@img_rotate}", usemap:"#image-map" %>
+	    <map name="image-map">
+		<area target="_blank" alt="firstpoint" title="" href="http://focus2.rimes.int/forecast/point?lat=50&amp;lon=50" coords="113,225,160,277" shape="rect">
+		    <area target="" alt="" title="" href="www.google.com" coords="163,225,209,277" shape="rect">
+			<area target="" alt="" title="" href="www.youtube.com" coords="1565,225,1612,278" shape="rect">
+	    </map>
+	</td>
+    </tr>
+</table>
+
+
+<br/>
+<br/>
+
+<table align=center>
+    <tr>
+	<td>
+
+	    <div id="mapid" style="width: 600px; height: 400px;"></div>
+
+	</td>
+    </tr>
+
+</table>
+
+<script>
+
+    var mymap = L.map('mapid').setView([<%=@clat%>,<%=@clon%>], <%=(@elon-@slon)/10 %>);
+
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    maxZoom: 8,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+}).addTo(mymap);
+
+
+var imageUrl = "<%= root_url + @download_dir+ "/" + @cp_png %>",
+    imageBounds = [[<%=@slat%>, <%=@slon%>], [<%=@elat%>, <%=@elon%>]];
+L.imageOverlay(imageUrl, imageBounds).setOpacity(0.8).addTo(mymap);
+
+var popup = L.popup();
+
+function onMapClick(e) {
+popup
+    .setLatLng(e.latlng)
+    .setContent(e.latlng.toString() + "<a href='/forecast/probpoint?lat="+ e.latlng.lat + "&amp;lon=" + e.latlng.lng + "&amp;info=<%= @output_dir.to_s %>&amp;title=<%= @final_png.to_s %>'> View Detail </a>")
+    .openOn(mymap);
+}
+
+mymap.on('click', onMapClick);
+
+</script>

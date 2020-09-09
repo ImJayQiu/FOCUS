@@ -7,7 +7,7 @@
         52.370216,
         4.895168,
         2]];
-        var map=new google.maps.Map(document.getElementById('map'), {
+        var map=new google.maps.Map(document.getElementById('gomap'), {
             zoom: 12, scrollwheel: false, navigationControl: true, mapTypeControl: false, scaleControl: false, draggable: true, styles: [
     {
         "featureType": "administrative",

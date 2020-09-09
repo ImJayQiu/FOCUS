@@ -1,0 +1,131 @@
+<!-- Benchmark -->
+
+<%#= @py_cmds %>
+<%#= @cdo_debug %>
+
+<!--
+    <table class=table >
+    <tr>
+    <%# @py_cmd_output.each do |info| %> 
+	<td align = center><%#= info[:file] rescue nil %><br/><%#= info[:time] rescue nil %></td>
+	<%#end%>
+	<td align = center><%#= "Plot Maps" %><br/><%#= @plot_time rescue nil %></td>
+	<td align = center><%#= "Total" %><br/><%#= @total_analysis_time rescue nil %></td>
+	</tr>
+	</table>
+-->
+
+<!-- Benchmark end -->
+
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+	<div class="section-title text-center">
+	    <h1>Forecast Result of <%= @ic_object %> </h1>
+	    <h4>Hindcast Period: <%= @sdy %> -- <%= @edy %> | Forecast Year: <%= @ic_year %></h4>
+	    <h4>Forecast Months: <%=@sfm %> --- <%=@efm%>  </h4>
+	</div>
+    </div>
+</div>
+
+<!-- Page Title end -->
+
+<div class="wrapper">
+    <div class="course-box shop-wrapper">
+
+	<% @all_output.each do |final|  %> 
+	    <div class="row">
+		<div class="col-md-6 col-md-offset-3">
+		    <div class="section-title text-center">
+			<h3><%= final[:method_full_name] %> Forecast </h3>
+		    </div>
+		</div>
+	    </div>
+
+
+	    <% final[:prec].each_with_index do |prec,i|  %> 
+
+		<% prec_name = prec.split("/")[-1] %>
+
+		<div class="col-md-4">
+		    <div class="course-box shop-wrapper">
+			<div class="image-wrap entry">
+			    <%= link_to (image_tag  root_url + @download_dir + prec_name, class: "img-responsive"), root_url + @download_dir + prec_name,  target: :_blank  %>
+			</div>
+			<!-- end image-wrap -->
+			<div class="course-details shop-box text-center">
+			    <h4><%#= link_to "#{prec_name[0..-5]}", root_url + @download_dir + prec_name,  target: :_blank  %></h4>
+
+			    <%= form_tag({controller: "forecast", action: "detail" }, target: '_blank', method: :post) do %>
+				<%= hidden_field_tag :prec, prec %>
+				<%= submit_tag "Show / Download high resolution images", class: "submit" %>
+				<% end #form_tag detail %>
+
+			</div><!-- end details -->
+		    </div><!-- end box -->
+		</div><!-- end col -->
+	    <% end %><!-- final[:prob].each_with_index -->
+
+
+	    <% ################ Probabilities forecast session ################################ %>
+	    <% #Probabilities forecast only need one button %>
+
+	    <div class="col-md-12">
+		<div class="course-details shop-box text-center">
+		    <div class="p-3 mb-2 bg-info text-white">
+			<%= form_tag({controller: "forecast", action: "probfore" }, target: '_blank', method: :post) do %>
+			    <%= hidden_field_tag :prob, final[:prob][0]  %>
+			    <%= submit_tag ">> Generate Probabilistic Climate Outlook <<", class: "submit" %>
+			    <% end #form_tag detail %>
+
+		    </div>
+		</div><!-- end box -->
+	    </div><!-- end col -->
+
+	    <% #Probabilities forecast only need one button %>
+	    <% ################ end Probabilities forecast session ################################ %>
+
+
+
+
+	    <% final[:nc].each do |nc|  %> 
+		<% file_name =  nc.split("/")[-1] %>
+		<% file_title = file_name[0...-3].split("_")[0..1].join("-") %>
+
+		<div class="col-md-4">
+		    <div class="course-details shop-box text-center">
+			<div class="p-3 mb-2 bg-info text-white">
+
+			    <%= file_title %><br/><%= link_to "Download NC", root_url + @download_dir + file_name %>
+			</div>
+		    </div><!-- end box -->
+		</div><!-- end col -->
+
+	    <% end %><!-- @final_nc_file -->
+
+
+
+
+	<% end %> <!-- # @all_output  --> 
+
+    </div> <!-- class="wrapper" -->
+</div> <!-- class="course-box shop-wrapper" -->
+
+
+<!-- ######################### end css layout ##################### -->
+
+
+<table class=table >
+
+    <tr>
+
+	<td align=right ><%= p "File Name : " %></td>
+
+	<td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params.txt" %></td>
+
+    </tr>
+
+</table>
+
+

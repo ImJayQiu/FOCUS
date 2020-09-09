@@ -1,37 +1,71 @@
 <%= form_with(model: user, local: true) do |form| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+    <% if user.errors.any? %>
+	<div id="error_explanation">
+	    <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
-      <ul>
-        <% user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+	    <ul>
+		<% user.errors.full_messages.each do |message| %>
+		    <li><%= message %></li>
+		<% end %>
+	    </ul>
+	</div>
+    <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
+    <table>
 
-  <div class="field">
-    <%= form.label :email %>
-    <%= form.text_field :email %>
-  </div>
+	<tr>
+	    <td>
+		Name:
+	    </td>
+	    <td>
+		<%= form.text_field :name %>
+	    </td>
+	</tr>
 
-  <div class="field">
-    <%= form.label :country %>
-    <%= form.text_field :country %>
-  </div>
+	<tr>
+	    <td>
+		Email:
+	    </td>
+	    <td>
+		<%= form.text_field :email %>
+	    </td>
+	</tr>
 
-  <div class="field">
-    <%= form.label :org %>
-    <%= form.text_field :org %>
-  </div>
+	<tr>
+	    <td>
+		Country:
+	    </td>
+	    <td>
+		<%= form.text_field :country %>
+	    </td>
+	</tr>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+	<tr>
+	    <td>
+		Organization:
+	    </td>
+	    <td>
+		<%= form.text_field :org %>
+	    </td>
+	</tr>
+
+	<tr>
+	    <td>
+		Role:
+	    </td>
+	    <td>
+		<%= form.select :remark1, User::ROLES %>
+	    </td>
+	</tr>
+
+	<tr>
+	    <td colspan=2 align=center>
+      <%= form.submit %>
+	    </td>
+	</tr>
+
+
+
+    </table>
+
 <% end %>

@@ -2,7 +2,7 @@
     <div class="container">
 	<div class="boxed boxedp4">
 	    <div class="wow slideInUp">
-		<img src=<%="#{root_url}/upload/countries/#{$country_iso}.jpg"%> alt="Country Map" height=100% width=100% />
+		<img src=<%="#{root_url}/upload/home2.jpg"%> alt="Home Map" height=100% width=100% />
 	    </div>
 
 	    <div class="row contactv2 text-center">
@@ -10,52 +10,65 @@
 		<div class="row">
 		    <div class="col-md-6 col-md-offset-3">
 			<div class="section-title text-center">
-			    <h3><%= current_user.country%> Forecast</h3>
+			    <h3>Forecast Customization System</h3>
+			    <h4><%= current_user.country%> Domain</h4>
 			</div>
 		    </div>
 		</div>
 
 
-		<div class="col-md-4">
+		<%#################### Forecast session ##########################%>
+
+		<div class="col-md-6">
 		    <div class="small-box">
 			<i class="flaticon-online-course wow fadeIn"></i>
-			<h4>Weather Forecast</h4>
-			<small>MME1 - MME2 - RCP</small>
-			<small>MME1&2 - MME&RCP</small>
-			<p><%= link_to ">> Forecast <<", forecast_welcome_index_path %></p>
+			<h4 title= "Ensemble forecasting is a method used in numerical weather prediction. This set of forecasts aims to give an indication of the range of possible future states of the atmosphere.&#010;Forecast Methods: &#010;Simple Mean Method (SMM)&#010;Weighted Average Method (WAM) & PCR">Multi-model ensemble<br/>Climate Prediction</h4>
+
+			<p title= "Ensemble forecasting is a method used in numerical weather prediction. This set of forecasts aims to give an indication of the range of possible future states of the atmosphere.&#010;Forecast Methods: &#010;Simple Mean Method (SMM)&#010;Weighted Average Method (WAM) & PCR">
+			<%= link_to ">> Generate MME Climate Outlook <<", forecast_welcome_index_path %></p>
 		    </div><!-- end small-box -->
 		</div><!-- end col -->
 
-		<div class="col-md-4">
+		<%#################### Verification session ##########################%>
+
+		<div class="col-md-6">
 		    <div class="small-box">
 			<i class="flaticon-download-business-statistics-symbol-of-a-graphic wow fadeIn"></i>
-			<h4>R.O.C Verification</h4>
-			<small>Under Maintenance</small>
-			<small>Coming soon !</small>
-			<p><%= link_to ">> R.O.C <<", roc_welcome_index_path %></p>
+			<h4 title= "">Climate Models<br/>Analysis</h4>
+
+			<p title= "">
+			<%= link_to ">> Models Analysis <<", verification_welcome_index_path %>
+			</p>
 		    </div><!-- end small-box -->
 		</div><!-- end col -->
 
-		<div class="col-md-4">
-		    <div class="small-box">
-			<i class="flaticon-computer-tool-for-education wow fadeIn"></i>
-			<h4>User Settings</h4>
-			<small>RIMES</small>
-			<small>focus@rimes.int</small>
-			<p><a href="#">>> Setting <<</a></p>
-		    </div><!-- end small-box -->
-		</div><!-- end col -->
-	    </div><!-- end contactv2 -->
+
+		<!--
+		<%#################### Forcast session GMT plot ##########################%>
+
+		<% if can? :manage, :all %>
+
+		    <div class="col-md-12">
+			<div class="small-box">
+			    <i class="flaticon-online-course wow fadeIn"></i>
+			    <h4 title= "Ensemble forecasting is a method used in numerical weather prediction. This set of forecasts aims to give an indication of the range of possible future states of the atmosphere.&#010;Forecast Methods: &#010;Simple Mean Method (SMM)&#010;Weighted Average Method (WAM) & PCR">Multi-model ensemble<br/>Climate Prediction</h4>
+
+			    <p title= "Ensemble forecasting is a method used in numerical weather prediction. This set of forecasts aims to give an indication of the range of possible future states of the atmosphere.&#010;Forecast Methods: &#010;Simple Mean Method (SMM)&#010;Weighted Average Method (WAM) & PCR">
+			    <%#= link_to ">> Generate MME Climate Outlook (GMT) <<", forecastm2_welcome_index_path %></p>
+			</div><!-- end small-box -->
+		    </div><!-- end col -->
+
+		<% end %>
 
 
 
-	    <div class="row">
+		<div class="row">
 
-		<div class="col-md-6 col-md-offset-3">
+		    <div class="col-md-6 col-md-offset-3">
 
-		</div><!-- end col -->
-	    </div><!-- end row -->
-	</div><!-- end container -->
-    </div>
+		    </div><!-- end col -->
+		</div><!-- end row -->
+	    </div><!-- end container -->
+	</div>
 </section>
 

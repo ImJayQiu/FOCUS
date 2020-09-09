@@ -6,6 +6,7 @@ class User < ApplicationRecord
     devise :database_authenticatable, :registerable,
 	:recoverable, :rememberable, :validatable, :trackable
 
+    ROLES = %w[Admin Expert User]
     # validates :name, :email, :org, :country, :presence => true
 
 end

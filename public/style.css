@@ -92,10 +92,11 @@ SKELETON
 }
 
 body {
-    background-color: #f6f6f6;
+    background-color: #fff;
     line-height: 1.6;
-    font-size: 16px;
-    color: #a2a2a2;
+    font-size: 18px;
+    /* color: #a2a2a2; */
+    color: #333333;
 }
 
 body,
@@ -201,7 +202,7 @@ HEADER
 ******************************************/
 
 .topbar {
-    background-color: #000;
+    /* background-color: #000; */
     margin-bottom: 30px;
     padding: 25px 0 25px;
 }
@@ -255,7 +256,7 @@ HEADER
     position: fixed;
     top: 0;
     z-index: 100;
-    background-color: #000;
+    background-color: #1f618d;
     left: 0;
     padding: 15px 0;
     right: 0,
@@ -866,20 +867,20 @@ CONTACT
     color: #b9b9b9;
 }
 
-#map {
+#gomap {
     height: 350px;
     position: relative;
     width: 100%;
     z-index: 1;
 }
 
-.mapv2 {
+.gomapv2 {
     padding: 10px;
     background-color: #f0f1f2;
     border: 1px solid #eee;
 }
 
-#map img {
+#gomap img {
     max-width: inherit;
 }
 
@@ -887,11 +888,11 @@ CONTACT
     margin-left: 10px;
 }
 
-.map {
+.gomap {
     position: relative;
 }
 
-.map .row {
+.gomap .row {
     position: relative;
 }
 
@@ -899,7 +900,7 @@ CONTACT
     width: 100% !important;
 }
 
-.map .searchmodule {
+.gomap .searchmodule {
     padding: 18px 10px;
 }
 
@@ -1011,7 +1012,7 @@ SECTIONS
 }
 
 .section.db {
-    background-color: #000000;
+    background-color: #1f618d;
 }
 
 .overlay {
@@ -1078,6 +1079,7 @@ SECTIONS
 
 .home-message small {
     font-size: 16px;
+    color: #ffffff;
     font-family: 'Droid Serif', sans-serif;
     font-style: italic;
     display: block;
@@ -1903,13 +1905,13 @@ FOOTER
 }
 
 .copyrights {
-    background-color: #000;
+    background-color: #1f618d;
     border-top: 1px solid #181818;
     padding: 30px 0;
 }
 
-.copyrights li a {
-    color: #aaa;
+.copyrights li {
+    color: #fff;
 }
 
 .copyrights ul {
@@ -1919,7 +1921,7 @@ FOOTER
 
 .copyrights ul li {
     line-height: 1;
-    font-size: 15px;
+    font-size: 18px;
     margin: 0 0 0 8px !important;
 }
 

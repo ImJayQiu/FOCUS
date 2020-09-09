@@ -1,0 +1,92 @@
+<head>
+    <script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <style>
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+    </style>
+</head>
+<table align=center>
+    <tr>
+	<td>
+	    <h1>Probability Forecast for the grid Lon:<%= @lon %> - Lat:<%=@lat%></h1>
+	</td>
+    </tr>
+</table>
+
+<%#= info = @info.split("/") %> 
+<%#= @files %> 
+<p/>
+<%#= @method %> 
+
+<p/>
+<% if @below_point.split(" ")[-1]=="nan" then below_value = 0 else below_value = @below_point.split(" ")[-1].to_f.round(3) end %> 
+    <p/>
+    <% if @avg_point.split(" ")[-1]=="nan" then avg_value = 0 else avg_value = @avg_point.split(" ")[-1].to_f.round(3) end %> 
+	<% if @above_point.split(" ")[-1]=="nan" then above_value = 0 else above_value = @above_point.split(" ")[-1].to_f.round(3) end %> 
+
+	    <div align=center>
+		<div id="container" style="width: 50%;" >
+		    <canvas id="canvas"></canvas>
+		</div>
+	    </div>
+
+
+
+	    <script>
+		var color = Chart.helpers.color;
+var barChartData = {
+    labels: ['ROC'],
+    datasets: [{
+	label: 'Below: <%=below_value.to_i%>',
+	backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+	borderColor: window.chartColors.red,
+	borderWidth: 1,
+	data: [<%=below_value.to_f%>]
+    }, {
+	label: 'Avg: <%=avg_value.to_i%>',
+	backgroundColor: color(window.chartColors.white).alpha(0.5).rgbString(),
+	borderColor: window.chartColors.gray,
+	borderWidth: 1,
+	data: [<%=avg_value.to_f%>]
+    },{
+	label: 'Above: <%=above_value.to_i%>',
+	backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+	borderColor: window.chartColors.blue,
+	borderWidth: 1,
+	data: [<%=above_value.to_f%>]
+    }]
+
+};
+
+window.onload = function() {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    window.myBar = new Chart(ctx, {
+	type: 'bar',
+	data: barChartData,
+	options: {
+	    responsive: true,
+	    legend: {
+		position: 'top',
+	    },
+	    title: {
+		display: true,
+		text: ''
+	    },
+	    scales: {
+		yAxes: [{
+		    ticks: {
+			min: 0,
+			max: 100 
+		    }
+		}]
+	    }
+	}
+    });
+
+};
+
+	    </script>

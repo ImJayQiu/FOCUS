@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  chapter: 1
+  heading1: 1
+  heading2: 1
+  heading3: 1
+  title: MyString
+  content: MyText
+  image1: MyString
+  image2: MyString
+
+two:
+  chapter: 1
+  heading1: 1
+  heading2: 1
+  heading3: 1
+  title: MyString
+  content: MyText
+  image1: MyString
+  image2: MyString

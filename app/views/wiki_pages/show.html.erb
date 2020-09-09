@@ -1,0 +1,46 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+<strong>Chapter:</strong>
+<%= @wiki_page.chapter %>
+</p>
+
+<p>
+<strong>Heading1:</strong>
+<%= @wiki_page.heading1 %>
+</p>
+
+<p>
+<strong>Heading2:</strong>
+<%= @wiki_page.heading2 %>
+</p>
+
+<p>
+<strong>Heading3:</strong>
+<%= @wiki_page.heading3 %>
+</p>
+
+<p>
+<strong>Title:</strong>
+<%= @wiki_page.title %>
+</p>
+
+<p>
+<strong>Content:</strong>
+<%= simple_format(@wiki_page.content) %>
+</p>
+
+<p>
+<strong>Image1:</strong>
+<%= image_tag @wiki_page.image1.url rescue nil %>
+</p>
+
+<p>
+<strong>Image2:</strong>
+<%= image_tag @wiki_page.image2.url rescue nil %>
+</p>
+
+<% if can? :manage, :all %>
+    <%= link_to 'Edit', edit_wiki_page_path(@wiki_page) %> |
+    <%= link_to 'Back', wiki_pages_path %>
+<% end %>

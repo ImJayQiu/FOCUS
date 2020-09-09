@@ -1,0 +1,26 @@
+
+<h1>FOCUS Wiki</h1>
+
+<p id="notice"><%= notice %></p>
+
+
+<br>
+
+<table class=table>
+  <thead>
+    <tr>
+      <th>Chapter</th>
+      <th>Title</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @wiki_pages.each do |wiki_page| %>
+      <tr>
+	  <td><%= link_to "#{wiki_page.chapter}-#{wiki_page.heading1}-#{wiki_page.heading2}-#{wiki_page.heading3}", wiki_page %></td>
+	<td><%= link_to "#{wiki_page.title}", wiki_page %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

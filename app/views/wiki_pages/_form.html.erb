@@ -1,0 +1,62 @@
+<%= form_with(model: wiki_page, local: true) do |form| %>
+    <% if wiki_page.errors.any? %>
+	<div id="error_explanation">
+	    <h2><%= pluralize(wiki_page.errors.count, "error") %> prohibited this wiki_page from being saved:</h2>
+
+	    <ul>
+		<% wiki_page.errors.full_messages.each do |message| %>
+		    <li><%= message %></li>
+		<% end %>
+	    </ul>
+	</div>
+    <% end %>
+
+    <table class=table>
+	<tr>
+	    <td align=right>Chapter:</td>
+	    <td align=left><%= form.number_field :chapter %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Heading1:</td>
+	    <td align=left><%= form.number_field :heading1 %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Heading2:</td>
+	    <td align=left><%= form.number_field :heading2 %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Heading3:</td>
+	    <td align=left><%= form.number_field :heading3 %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Title:</td>
+	    <td align=left><%= form.text_field :title %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Content:</td>
+	    <td align=left><%= form.text_area :content, size: "50x30"%></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Image1:</td>
+	    <td align=left><%= form.file_field :image1 %></td>
+	</tr>
+
+	<tr>
+	    <td align=right>Image2:</td>
+	    <td align=left><%= form.file_field :image2 %></td>
+	</tr>
+
+	<tr>
+	    <td align=right></td>
+	    <td align=left><%= form.submit %></td>
+	</tr>
+
+    </table>
+
+<% end %>

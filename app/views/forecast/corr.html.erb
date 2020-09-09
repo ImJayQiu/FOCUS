@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+	<div class="section-title text-center">
+
+	    <h2><%= @page_title %></h2>
+
+	    <h4>Months of Forecast: <%= @fmonths %></h4>  
+
+	</div>
+    </div>
+</div>
+
+<!-- Page Title end -->
+
+<div class="row">
+    <div class="wrapper">
+	<div class="course-box shop-wrapper">
+
+
+
+	    <% @corr_files.each do |corr| %>
+		<% img_count = 12/@corr_files.size %>
+		<div class="col-md-<%=img_count%>">
+		    <div class="course-box shop-wrapper">
+			<div class="image-wrap2 entry">
+
+			    <%= link_to (image_tag corr[28..-1], class: "img-responsive", width: "600", style: "#{@img_rotate}" ), corr[28..-1],  target: :_blank  %>
+
+			    <br/>
+
+			    <div align=center>
+				<%= link_to ">> Download NetCDF <<", root_url + @download_dir + "/"+ corr[-29..-16]+ ".nc" %>
+			    </div>
+
+			</div>
+		    </div>
+		</div>
+
+		<% end #@corr_files.each do |corr| %>
+
+	    </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="course-details shop-box text-center">
+	<div class="p-3 mb-2 bg-info text-white">
+
+	</div>
+    </div>
+</div>
+
+

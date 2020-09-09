@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+gem 'rmagick'
+
+gem 'carrierwave', '~> 2.0'
 
 ruby '2.6.3'
 

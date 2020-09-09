@@ -1,0 +1,245 @@
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+</head>
+
+
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+	<div class="section-title text-center">
+	    <h1>Models Analysis Result of <%= @ic_object %> </h1>
+	    <h4>Analysis Years: <%= @sdy %> to <%= @edy %> | Initial Condition: <%= @ic_year %>-<%=@ic_month%></h4>
+	    <h4>Analysis Months: <%= @fmonths %> </h4>
+	    <h4>debug: <%= @debug %> </h4>
+	</div>
+    </div>
+</div>
+
+<%############################################################################################################%>
+
+<div class="col-md-12">
+    <div class="course-details shop-box text-center">
+	<div class="p-3 mb-2 bg-info text-white">
+	    <% if @commit == 'Check Models' %>
+		<h2>Check Models</h2>
+	    <%else%>
+		<h2>Models Analysis</h2>
+	    <% end %>
+	</div>
+    </div>
+</div>
+
+<% if @commit == 'Check Models' %>
+
+    <%############################ Datasets availability check ##########################################%>
+
+    <div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+	    <table class=table>
+
+		<tr>
+		    <td>Models<br>Years</td>
+		    <% @models.sort.each do |model| %>
+			<td><small><div style='width: 50px;'><%=model%></div></small></td>
+		    <% end %>
+		</tr>
+
+		<% @years_check.sort.reverse.each do |year| %>
+		    <tr>
+			<td><small><%=year%></small></td>
+
+			<% @models.sort.each do |model| %>
+
+			    <% if @data_check.to_h[model].include?(year) %>
+
+				<td><img src="/images/cross.png" width="20" height="20"></td>
+
+			    <% else %>
+
+				<td><img src="/images/check.png" width="20" height="20"></td>
+
+			    <% end %>
+
+			<% end %>
+
+		    </tr>
+
+		<% end %>
+
+		<tr>
+		    <td>Models<br>Year</td>
+		    <% @models.sort.each do |model| %>
+			<td><small><div style='width: 50px;'><%=model%></div></small></td>
+		    <% end %>
+		</tr>
+
+	    </table>
+
+	    <%= form_tag({controller: "verification", action: "result" }, method: :post) do %>
+
+		<%= hidden_field_tag :ic_object, @ic_object %>
+		<%= hidden_field_tag :ic_year, @ic_year %>
+		<%= hidden_field_tag :ic_month, @ic_month  %>
+		<%= hidden_field_tag :sfm, @sfm %> 
+		<%= hidden_field_tag :efm, @efm %>
+		<%= hidden_field_tag :obs_data, @obs_data %>
+		<%= hidden_field_tag :sdy, @sdy %> 
+		<%= hidden_field_tag :edy, @edy %>
+		<% @models.each do |m| %>
+		    <%= hidden_field_tag 'models[]', m %>
+		<%end%>
+
+		<table class=table>
+		    <tr><td align = center>
+			    <%= submit_tag "Submit & Analyze", class: "submit", :data => { :disable_with => 'System is processing datasets now, Please wait ...' } %>
+			</td></tr>
+		</table>
+	    <% end %>
+
+	</div>
+    </div>
+
+
+
+
+
+
+<%else%>
+
+    <%########################################################################################################%>
+<!--
+    <div class="col-md-12">
+	<div class="course-details shop-box text-center">
+	    <div class="p-3 mb-2 bg-info text-white">
+		<h3>Models Analysis</h3>
+	    </div>
+	</div>
+    </div>
+-->
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/clim.png", class: "img-responsive", title: "Climatology"), action: "climatology",  dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank  %>
+		    <h4><%= link_to "Climatology", action: "climatology", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/acc.png", class: "img-responsive", title: "Anomaly Correlation Coefficient"), action: "acc", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank  %>
+		    <h4><%= link_to "Anomaly Correlation", action: "acc", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/sd.png", class: "img-responsive", title: "Standard Deviation"), action: "sd", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths,  target: :_blank  %>
+
+		    <h4><%= link_to "Standard Deviation", action: "sd", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+
+    <div class="col-md-3">
+	<div class="course-box shop-wrapper">
+	    <div class="image-wrap2 entry">
+		<div class="course-details shop-box text-center">
+
+		    <%= link_to (image_tag  root_url + "images/rmse.png", class: "img-responsive", title: "Root Mean Square Error"), action: "rmse",  dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths, target: :_blank %>
+		    <h4><%= link_to "Root Mean Square Error", action: "rmse", dir: @download_dir, models: @models, methods: @methods, fmonths: @fmonths %></h4>
+
+		</div>
+	    </div>
+	</div>
+    </div>
+
+    <!-- ######################### end css layout ##################### -->
+
+
+
+
+
+    <table class=table >
+
+	<tr>
+
+	    <td align=right ></td>
+
+	    <td align=left ></td>
+
+	</tr>
+
+
+	<tr>
+
+	    <td align=right >Initial Condition:</td>
+
+	    <td align=left ><%= "#{@ic_year} | #{@ic_month} " %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Models:</td>
+
+	    <td align=left ><%= "#{@models.join(' ')}" %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Observation:</td>
+
+	    <td align=left ><%= "#{@obs_data}" %></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Hindcast:</td>
+
+	    <td align=left ><%= "#{@sdy} to #{@edy}"%></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right >Forecast Months:</td>
+
+	    <td align=left ><%= "#{@fmonths}"%></td>
+
+	</tr>
+
+	<tr>
+
+	    <td align=right ><%= p "File Name : " %></td>
+
+	    <td align=left ><%= link_to "Params.txt", root_url + @download_dir + "params.txt" %></td>
+
+	</tr>
+
+    </table>
+
+<% end %>

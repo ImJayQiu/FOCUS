@@ -15,7 +15,8 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
 	<div class="section-title text-center">
-	    <h1>Forecast Result of <%= current_user.country %></h1>
+	    <h1>Verification Result of Multi-model Ensemble Forecast</h1>
+	    <h4>Hindcast Period: <%= @sdy %> -- <%= @edy %> </h4>
 	</div>
     </div>
 </div>
@@ -29,16 +30,20 @@
 	    <div class="row">
 		<div class="col-md-6 col-md-offset-3">
 		    <div class="section-title text-center">
-			<h3><%= final[:method] %> Forecast</h3>
+			<h3><%= final[:method_full_name] %> Verification</h3>
 		    </div>
 		</div>
 	    </div>
 
 	    <% final[:png].each do |png|  %> 
 		<% png_name =  png.split("/")[-1] %>
-		<% png_count = 12/final[:png].size  %>
+		<% if img_count = final[:png].size < 5  %>
+		<% md_count = 12/final[:png].size  %>
+	        <% else %>
+		<% md_count = 3  %>
+		<% end %>
 
-		<div class=<%= "col-md-#{png_count}"%> "rocimgdiv">
+		<div class=<%= "col-md-#{md_count}"%> "rocimgdiv">
 		    <div class="course-box shop-wrapper">
 			<div class="image-wrap entry">
 			    <%= link_to (image_tag  root_url + @download_dir + png_name, class: "img-responsive"), root_url + @download_dir + png_name,  target: :_blank  %>
@@ -58,7 +63,7 @@
 		<% file_name =  nc.split("/")[-1] %>
 		<% file_title = file_name[0...-3].split("_")[0..1].join("-") %>
 
-		<div class="col-md-6">
+		<div class="col-md-12">
 		    <div class="course-details shop-box text-center">
 			<div class="p-3 mb-2 bg-info text-white">
 
